@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>منبه مواقيت الصلاة</title>
+<meta name="description" content="برنامج مجاني لويندوز يذكّرك بمواقيت الصلاة بالأذان ونافذة تنبيه، حسب تقويم أم القرى.">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f4ee;
+    --surface: #ffffff;
+    --text: #1d2521;
+    --muted: #5c6862;
+    --line: #e2ded3;
+    --brand: #0f3d2e;
+    --brand-soft: #e3eee8;
+    --accent: #b8893b;
+    --warn-bg: #fdf5e6;
+    --warn-line: #ecd7ad;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e1412;
+      --surface: #161e1b;
+      --text: #e8ece9;
+      --muted: #9aa8a1;
+      --line: #26312c;
+      --brand: #3f9b76;
+      --brand-soft: #1b2b24;
+      --accent: #d7ab5e;
+      --warn-bg: #2a2416;
+      --warn-line: #4a3e22;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+    line-height: 1.8;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+
+  header { padding: 56px 0 40px; text-align: center; }
+  header img { width: 88px; height: 88px; }
+  h1 { font-size: clamp(28px, 6vw, 40px); margin: 16px 0 8px; line-height: 1.3; }
+  .lead { color: var(--muted); font-size: 18px; margin: 0 auto 28px; max-width: 34em; }
+
+  .download {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--brand); color: #fff; text-decoration: none;
+    font-size: 19px; font-weight: 700;
+    padding: 14px 32px; border-radius: 12px;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .download:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(15,61,46,.25); }
+  .download svg { width: 22px; height: 22px; }
+  .meta { color: var(--muted); font-size: 14px; margin-top: 12px; }
+
+  section { margin: 0 0 40px; }
+  h2 { font-size: 22px; margin: 0 0 16px; }
+
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+  .card strong { display: block; margin-bottom: 2px; }
+  .card span { color: var(--muted); font-size: 15px; }
+
+  ol.steps { list-style: none; padding: 0; margin: 0; counter-reset: s; }
+  ol.steps li {
+    counter-increment: s; position: relative;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 14px 60px 14px 18px; margin-bottom: 10px;
+  }
+  ol.steps li::before {
+    content: counter(s); position: absolute; right: 16px; top: 14px;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--brand-soft); color: var(--brand); font-weight: 700;
+    display: grid; place-items: center;
+  }
+
+  .note { background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: 12px; padding: 16px 18px; }
+  .note b { color: var(--accent); }
+
+  details { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 18px; margin-bottom: 10px; }
+  summary { cursor: pointer; font-weight: 500; }
+  details p { color: var(--muted); margin: 8px 0 4px; }
+
+  kbd { background: var(--brand-soft); border-radius: 6px; padding: 1px 7px; font-family: inherit; font-size: .95em; }
+
+  footer { text-align: center; color: var(--muted); font-size: 14px; padding: 24px 0 48px; border-top: 1px solid var(--line); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <img src="icon.png" alt="">
+    <h1>منبه مواقيت الصلاة</h1>
+    <p class="lead">برنامج خفيف لويندوز يعمل في الخلفية، ويذكّرك بدخول وقت كل صلاة بصوت الأذان ونافذة تنبيه — حسب تقويم أم القرى.</p>
+    <a class="download" href="PrayerReminder.exe" download>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+      تحميل البرنامج
+    </a>
+    <div class="meta">ويندوز 10 و 11 · الحجم 22 ميجابايت · مجاني</div>
+  </header>
+
+  <section>
+    <h2>المميزات</h2>
+    <div class="features">
+      <div class="card"><strong>تلقائي بالكامل</strong><span>تختار مدينتك مرة وحدة، وبعدها يشتغل مع كل تشغيل للجهاز.</span></div>
+      <div class="card"><strong>أذان ونافذة تنبيه</strong><span>نافذة صغيرة تبقى ظاهرة 20 دقيقة مع عدّاد تنازلي.</span></div>
+      <div class="card"><strong>تقويم أم القرى</strong><span>نفس الطريقة الرسمية المعتمدة في السعودية.</span></div>
+      <div class="card"><strong>يعمل بدون إنترنت</strong><span>يحفظ آخر مواقيت، ويستخدمها إذا انقطع الاتصال.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>طريقة التثبيت</h2>
+    <ol class="steps">
+      <li>حمّل البرنامج من الزر بالأعلى، ويُفضّل تنقله لمكان ثابت (مثل مجلد المستندات) قبل تشغيله.</li>
+      <li>شغّل الملف <kbd>PrayerReminder.exe</kbd> بنقرة مزدوجة.</li>
+      <li>اكتب اسم مدينتك بالإنجليزي (مثال: <kbd>Riyadh</kbd> أو <kbd>Jeddah</kbd>) — وخلاص.</li>
+      <li>بتظهر أيقونة الهلال بجانب الساعة. اضغط عليها بالزر الأيمن واختر «اختبار التنبيه الآن» للتأكد.</li>
+    </ol>
+  </section>
+
+  <section>
+    <div class="note">
+      <b>تنبيه ويندوز:</b> البرنامج غير موقّع رقمياً، لذلك قد تظهر لك رسالة زرقاء «Windows protected your PC».
+      اضغط <kbd>More info</kbd> ثم <kbd>Run anyway</kbd> (أو «مزيد من المعلومات» ثم «تشغيل على أي حال»).
+    </div>
+  </section>
+
+  <section>
+    <h2>أسئلة شائعة</h2>
+    <details>
+      <summary>كيف أغيّر المدينة؟</summary>
+      <p>اضغط بالزر الأيمن على أيقونة الهلال بجانب الساعة، واختر «تغيير المدينة».</p>
+    </details>
+    <details>
+      <summary>كيف أوقف صوت الأذان؟</summary>
+      <p>من أيقونة الهلال اختر «إيقاف صوت الأذان».</p>
+    </details>
+    <details>
+      <summary>كيف أحذف البرنامج؟</summary>
+      <p>من أيقونة الهلال اختر «خروج»، ثم افتح إدارة المهام (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Esc</kbd>) ← «تطبيقات بدء التشغيل» وعطّل PrayerReminder، ثم احذف الملف.</p>
+    </details>
+    <details>
+      <summary>ما أسمع صوت الأذان؟</summary>
+      <p>تأكد إن صوت الجهاز مو مكتوم، وجرّب «اختبار التنبيه الآن». تقدر كمان تحط أي ملف أذان باسم <kbd>azan.mp3</kbd> بجانب البرنامج وبيستخدمه بدلاً من الأذان المدمج.</p>
+    </details>
+  </section>
+
+  <footer>
+    المواقيت من <a href="https://aladhan.com" style="color:inherit">Aladhan</a> · صدقة جارية — شاركه مع من تحب
+  </footer>
+
+</div>
+</body>
+</html>
