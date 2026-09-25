@@ -88,6 +88,17 @@
   summary { cursor: pointer; font-weight: 500; }
   details p { color: var(--muted); margin: 8px 0 4px; }
 
+  .countdown { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px 18px; text-align: center; }
+  .countdown .label { color: var(--muted); font-size: 15px; }
+  .countdown .next { font-size: 22px; font-weight: 700; margin: 4px 0 2px; }
+  .countdown .timer { font-size: clamp(38px, 11vw, 56px); font-weight: 700; color: var(--brand); letter-spacing: 1px; direction: ltr; font-variant-numeric: tabular-nums; line-height: 1.2; }
+  .countdown .timer.now { font-size: clamp(24px, 6vw, 32px); }
+  .times { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 16px; }
+  .times div { border-radius: 10px; padding: 6px 2px; font-size: 14px; color: var(--muted); }
+  .times div b { display: block; color: var(--text); font-size: 15px; }
+  .times div.active { background: var(--brand-soft); }
+  .times div.active b { color: var(--brand); }
+
   kbd { background: var(--brand-soft); border-radius: 6px; padding: 1px 7px; font-family: inherit; font-size: .95em; }
 
   footer { text-align: center; color: var(--muted); font-size: 14px; padding: 24px 0 48px; border-top: 1px solid var(--line); }
@@ -99,7 +110,7 @@
   <header>
     <img src="icon.png" alt="">
     <h1>منبه مواقيت الصلاة</h1>
-    <p class="lead">برنامج خفيف لويندوز يعمل في الخلفية، ويذكّرك بدخول وقت كل صلاة بصوت الأذان ونافذة تنبيه — حسب تقويم أم القرى.</p>
+    <p class="lead">برنامج خفيف لويندوز يعمل في الخلفية، ويذكّرك بدخول وقت كل صلاة بصوت الأذان وإشعار على الشاشة — لجميع مدن دول الخليج.</p>
     <a class="download" href="PrayerReminder.exe" download>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
       تحميل البرنامج
@@ -108,11 +119,21 @@
   </header>
 
   <section>
+    <div class="countdown" id="countdown">
+      <div class="label">الأذان القادم في مكة المكرمة</div>
+      <div class="next" id="cd-next">…</div>
+      <div class="timer" id="cd-timer">--:--:--</div>
+      <div class="times" id="cd-times"></div>
+    </div>
+  </section>
+
+  <section>
     <h2>المميزات</h2>
     <div class="features">
       <div class="card"><strong>تلقائي بالكامل</strong><span>تختار مدينتك مرة وحدة، وبعدها يشتغل مع كل تشغيل للجهاز.</span></div>
-      <div class="card"><strong>أذان ونافذة تنبيه</strong><span>نافذة صغيرة تبقى ظاهرة 20 دقيقة مع عدّاد تنازلي.</span></div>
-      <div class="card"><strong>تقويم أم القرى</strong><span>نفس الطريقة الرسمية المعتمدة في السعودية.</span></div>
+      <div class="card"><strong>جميع دول الخليج</strong><span>السعودية والإمارات والكويت وقطر والبحرين وعُمان، بالطريقة الرسمية لكل دولة (أم القرى في السعودية).</span></div>
+      <div class="card"><strong>إشعار على ذوقك</strong><span>اختر ثيم الإشعار والزاوية اللي يظهر فيها، ويبقى 20 دقيقة. إغلاقه يوقف الأذان.</span></div>
+      <div class="card"><strong>صوتك المفضّل</strong><span>تحكّم بمستوى الصوت، أو اختر ملف أذان من عندك.</span></div>
       <div class="card"><strong>يعمل بدون إنترنت</strong><span>يحفظ آخر مواقيت، ويستخدمها إذا انقطع الاتصال.</span></div>
     </div>
   </section>
@@ -120,9 +141,9 @@
   <section>
     <h2>طريقة التثبيت</h2>
     <ol class="steps">
-      <li>حمّل البرنامج من الزر بالأعلى، ويُفضّل تنقله لمكان ثابت (مثل مجلد المستندات) قبل تشغيله.</li>
+      <li>حمّل البرنامج من الزر بالأعلى.</li>
       <li>شغّل الملف <kbd>PrayerReminder.exe</kbd> بنقرة مزدوجة.</li>
-      <li>اكتب اسم مدينتك بالعربي أو الإنجليزي، مثل: <kbd>الرياض</kbd> أو <kbd>Jeddah</kbd>، وأكّد الموقع — وخلاص.</li>
+      <li>اختر دولتك ومدينتك من القائمة، وشكل الإشعار ومكانه، ثم اضغط <kbd>حفظ</kbd> — وخلاص. بعدها تقدر تحذف الملف اللي حمّلته.</li>
       <li>بتظهر أيقونة الهلال بجانب الساعة. اضغط عليها بالزر الأيمن واختر «اختبار التنبيه الآن» للتأكد.</li>
     </ol>
   </section>
@@ -131,19 +152,19 @@
     <h2>أسئلة شائعة</h2>
     <details>
       <summary>كيف أغيّر المدينة؟</summary>
-      <p>اضغط بالزر الأيمن على أيقونة الهلال بجانب الساعة، واختر «تغيير المدينة».</p>
+      <p>اضغط بالزر الأيمن على أيقونة الهلال بجانب الساعة، واختر «الإعدادات». من نفس المكان تغيّر ثيم الإشعار ومكانه والصوت.</p>
     </details>
     <details>
       <summary>كيف أوقف صوت الأذان؟</summary>
-      <p>من أيقونة الهلال اختر «إيقاف صوت الأذان».</p>
+      <p>اضغط «إغلاق» في الإشعار، أو من أيقونة الهلال اختر «إيقاف صوت الأذان».</p>
     </details>
     <details>
       <summary>كيف أحذف البرنامج؟</summary>
-      <p>من أيقونة الهلال اختر «خروج»، ثم افتح إدارة المهام (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Esc</kbd>) ← «تطبيقات بدء التشغيل» وعطّل PrayerReminder، ثم احذف الملف.</p>
+      <p>من أيقونة الهلال اختر «إزالة البرنامج»، وبيتوقف ويُحذف من الجهاز مع التشغيل التلقائي.</p>
     </details>
     <details>
       <summary>ما أسمع صوت الأذان؟</summary>
-      <p>تأكد إن صوت الجهاز مو مكتوم، وجرّب «اختبار التنبيه الآن». تقدر كمان تحط أي ملف أذان باسم <kbd>azan.mp3</kbd> بجانب البرنامج وبيستخدمه بدلاً من الأذان المدمج.</p>
+      <p>تأكد إن صوت الجهاز مو مكتوم، وجرّب «اختبار التنبيه الآن». ومن «الإعدادات» تقدر ترفع مستوى الصوت، أو تختار ملف أذان من عندك (MP3 أو WAV).</p>
     </details>
   </section>
 
@@ -152,5 +173,91 @@
   </footer>
 
 </div>
+
+<script>
+(function () {
+  // مواقيت مكة المكرمة (أم القرى) — الوقت دائماً بتوقيت مكة (UTC+3، بدون توقيت صيفي)
+  var LAT = 21.4225, LON = 39.8262, OFFSET = 3 * 3600 * 1000;
+  var KEYS = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
+  var NAMES = { Fajr: "الفجر", Dhuhr: "الظهر", Asr: "العصر", Maghrib: "المغرب", Isha: "العشاء" };
+  var days = {};  // كاش المواقيت لكل يوم
+  var $next = document.getElementById("cd-next"), $timer = document.getElementById("cd-timer"),
+      $times = document.getElementById("cd-times");
+
+  function makkahDate(offsetDays) {  // تاريخ اليوم في مكة (+ أيام)
+    var d = new Date(Date.now() + OFFSET + offsetDays * 86400000);
+    return { y: d.getUTCFullYear(), m: d.getUTCMonth() + 1, d: d.getUTCDate() };
+  }
+  function key(dt) { return dt.y + "-" + dt.m + "-" + dt.d; }
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function fmt12(hhmm) {
+    var p = hhmm.split(":"), h = +p[0], suffix = h < 12 ? "ص" : "م";
+    return ((h % 12) || 12) + ":" + p[1] + " " + suffix;
+  }
+
+  function load(dt) {
+    var k = key(dt);
+    if (days[k]) return Promise.resolve(days[k]);
+    var url = "https://api.aladhan.com/v1/timings/" + pad(dt.d) + "-" + pad(dt.m) + "-" + dt.y +
+              "?latitude=" + LAT + "&longitude=" + LON + "&method=4";
+    return fetch(url).then(function (r) { return r.json(); }).then(function (j) {
+      var t = {};
+      KEYS.forEach(function (name) {
+        var hhmm = j.data.timings[name].split(" ")[0], p = hhmm.split(":");
+        t[name] = { hhmm: hhmm, at: Date.UTC(dt.y, dt.m - 1, dt.d, +p[0], +p[1]) - OFFSET };
+      });
+      return (days[k] = t);
+    });
+  }
+
+  function findNext() {
+    var today = makkahDate(0);
+    return load(today).then(function (t) {
+      var now = Date.now();
+      for (var i = 0; i < KEYS.length; i++) {
+        if (t[KEYS[i]].at > now) return { today: t, name: KEYS[i], at: t[KEYS[i]].at };
+      }
+      return load(makkahDate(1)).then(function (tm) { return { today: t, name: "Fajr", at: tm.Fajr.at }; });
+    });
+  }
+
+  var current = null, justPassed = null;
+  function renderTimes(t, active) {
+    $times.innerHTML = KEYS.map(function (n) {
+      return '<div class="' + (n === active ? "active" : "") + '"><b>' + NAMES[n] + "</b>" + fmt12(t[n].hhmm) + "</div>";
+    }).join("");
+  }
+
+  function refresh() {
+    return findNext().then(function (n) {
+      current = n;
+      $next.textContent = "صلاة " + NAMES[n.name] + " · " + fmt12(new Date(n.at + OFFSET).toISOString().substr(11, 5));
+      renderTimes(n.today, n.name);
+    }).catch(function () {
+      $next.textContent = "تعذّر تحميل المواقيت — تأكد من الاتصال بالإنترنت";
+      setTimeout(refresh, 30000);
+    });
+  }
+
+  function tick() {
+    if (current) {
+      var left = Math.floor((current.at - Date.now()) / 1000);
+      if (justPassed && Date.now() - justPassed.at < 60000) {
+        $timer.classList.add("now");
+        $timer.textContent = "حان الآن وقت صلاة " + NAMES[justPassed.name];
+      } else if (left <= 0) {
+        justPassed = current; current = null;
+        refresh();
+      } else {
+        $timer.classList.remove("now");
+        $timer.textContent = pad(Math.floor(left / 3600)) + ":" + pad(Math.floor(left % 3600 / 60)) + ":" + pad(left % 60);
+      }
+    }
+    setTimeout(tick, 1000 - (Date.now() % 1000));
+  }
+
+  refresh().then(tick);
+})();
+</script>
 </body>
 </html>
