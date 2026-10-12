@@ -115,7 +115,8 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
       تحميل البرنامج
     </a>
-    <div class="meta">ويندوز 10 و 11 · الحجم 19 ميجابايت · مجاني</div>
+    <div class="meta">ويندوز 10 و 11 · الإصدار <span id="app-version">2.6</span> · الحجم 19 ميجابايت · مجاني</div>
+    <div class="meta" id="whats-new" hidden></div>
   </header>
 
   <section>
@@ -178,6 +179,17 @@
 
 </div>
 
+<script>
+// رقم آخر إصدار والجديد فيه — من نفس الملف اللي يقرأه البرنامج للتحديث
+fetch("version.json?t=" + Date.now()).then(function (r) { return r.json(); }).then(function (v) {
+  document.getElementById("app-version").textContent = v.version;
+  if (v.notes) {
+    var el = document.getElementById("whats-new");
+    el.textContent = "الجديد في هذا الإصدار: " + v.notes;
+    el.hidden = false;
+  }
+}).catch(function () {});
+</script>
 <script>
 (function () {
   // مواقيت مكة المكرمة (أم القرى) — الوقت دائماً بتوقيت مكة (UTC+3، بدون توقيت صيفي)

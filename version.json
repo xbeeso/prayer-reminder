@@ -1,6 +1,6 @@
 {
-  "version": "2.5",
+  "version": "2.6",
   "url": "https://xbeeso.github.io/prayer-reminder/PrayerReminder-Setup.exe",
-  "sha256": "bef17dfa78146989d203ecee933df514d817ad7699401969f6e3a08bbc07d45f",
-  "notes": "متابعة التحديثات: إشعار أول ما يشتغل البرنامج، وفحص كل ساعة وهو شغال."
+  "sha256": "6965175a4381d1c98d2fdd44d01f3860a308b2541cf11a28136c0a6176214fda",
+  "notes": "ثيم برتقالي، ورقم الإصدار يظهر في نافذة الإعدادات."
 }
