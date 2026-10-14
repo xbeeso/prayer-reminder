@@ -407,7 +407,7 @@ fetch("version.json?t=" + Date.now()).then(function (r) { return r.json(); }).th
 <script>
 // خانة الملاحظات — ترسل عبر Formspree
 (function () {
-  var ENDPOINT = "";  // رابط نموذج Formspree، مثل: https://formspree.io/f/xxxxxxxx
+  var ENDPOINT = "https://formspree.io/f/mjygaqno";
   var form = document.getElementById("notes-form"), btn = document.getElementById("notes-send"),
       status = document.getElementById("notes-status");
   if (!ENDPOINT) { btn.disabled = true; status.textContent = "خانة الملاحظات بتشتغل قريباً."; return; }
