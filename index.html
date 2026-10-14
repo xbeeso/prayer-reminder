@@ -102,12 +102,12 @@
 
   .notes { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; gap: 10px; }
   .notes label { color: var(--muted); font-size: 15px; }
-  .notes textarea, .notes input, .picker select {
+  .notes textarea, .picker select {
     width: 100%; font: inherit; color: var(--text); background: var(--bg);
     border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
   }
   .notes textarea { resize: vertical; min-height: 96px; }
-  .notes textarea:focus, .notes input:focus, .picker select:focus { outline: 2px solid var(--brand); outline-offset: -1px; }
+  .notes textarea:focus, .picker select:focus { outline: 2px solid var(--brand); outline-offset: -1px; }
   .notes-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
   .notes button {
     font: inherit; font-weight: 700; color: #fff; background: var(--brand);
@@ -209,7 +209,6 @@
     <form class="notes" id="notes-form">
       <label for="notes-msg">عندك اقتراح أو واجهتك مشكلة؟ اكتبها هنا وتوصلنا.</label>
       <textarea id="notes-msg" name="message" rows="4" required maxlength="2000" placeholder="اكتب ملاحظتك…"></textarea>
-      <input type="email" name="email" placeholder="إيميلك (اختياري) إذا تبي نرد عليك" dir="auto">
       <div class="notes-row">
         <button type="submit" id="notes-send">إرسال</button>
         <span id="notes-status" role="status"></span>
@@ -408,7 +407,7 @@ fetch("version.json?t=" + Date.now()).then(function (r) { return r.json(); }).th
 // خانة الملاحظات — ترسل لنموذج Google «ملاحظات منبه الصلاة» (الردود تظهر في تبويب الردود بالنموذج)
 (function () {
   var ENDPOINT = "https://docs.google.com/forms/d/e/1FAIpQLSd2nG_yCRrhuCWpCo-_843yboA8RbPhXyxkTtgSrxTffLH6kA/formResponse";
-  var FIELDS = { message: "entry.1571498340", email: "entry.259199318" };
+  var FIELDS = { message: "entry.1571498340" };
   var form = document.getElementById("notes-form"), btn = document.getElementById("notes-send"),
       status = document.getElementById("notes-status");
   form.addEventListener("submit", function (e) {
