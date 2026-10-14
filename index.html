@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>منبه مواقيت الصلاة</title>
-<meta name="description" content="برنامج مجاني لويندوز يذكّرك بمواقيت الصلاة بالأذان ونافذة تنبيه، حسب تقويم أم القرى.">
+<meta name="description" content="برنامج يذكرك بأوقات الصلوات لجميع مدن دول الخليج.">
 <link rel="icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -65,7 +65,8 @@
   section { margin: 0 0 40px; }
   h2 { font-size: 22px; margin: 0 0 16px; }
 
-  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+  .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  @media (max-width: 520px) { .features { grid-template-columns: 1fr; } }
   .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
   .card strong { display: block; margin-bottom: 2px; }
   .card span { color: var(--muted); font-size: 15px; }
@@ -99,6 +100,35 @@
   .times div.active { background: var(--brand-soft); }
   .times div.active b { color: var(--brand); }
 
+  .notes { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; gap: 10px; }
+  .notes label { color: var(--muted); font-size: 15px; }
+  .notes textarea, .notes input, .picker select {
+    width: 100%; font: inherit; color: var(--text); background: var(--bg);
+    border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+  }
+  .notes textarea { resize: vertical; min-height: 96px; }
+  .notes textarea:focus, .notes input:focus, .picker select:focus { outline: 2px solid var(--brand); outline-offset: -1px; }
+  .notes-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .notes button {
+    font: inherit; font-weight: 700; color: #fff; background: var(--brand);
+    border: 0; border-radius: 10px; padding: 8px 28px; cursor: pointer;
+  }
+  .notes button:disabled { opacity: .6; cursor: default; }
+  #notes-status { color: var(--muted); font-size: 14px; }
+
+  .countdown .label button {
+    font: inherit; font-size: 14px; color: var(--brand); background: none; border: 0;
+    padding: 0 4px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
+  }
+  .countdown .source { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .picker { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 10px 0 4px; }
+  .picker[hidden] { display: none; }
+  .picker select { width: auto; min-width: 140px; padding: 6px 10px; font-size: 15px; }
+  .picker button {
+    font: inherit; font-size: 15px; color: var(--brand); background: var(--brand-soft);
+    border: 0; border-radius: 10px; padding: 6px 14px; cursor: pointer;
+  }
+
   kbd { background: var(--brand-soft); border-radius: 6px; padding: 1px 7px; font-family: inherit; font-size: .95em; }
 
   footer { text-align: center; color: var(--muted); font-size: 14px; padding: 24px 0 48px; border-top: 1px solid var(--line); }
@@ -110,20 +140,26 @@
   <header>
     <img src="icon.png" alt="">
     <h1>منبه مواقيت الصلاة</h1>
-    <p class="lead">برنامج خفيف لويندوز يعمل في الخلفية، ويذكّرك بدخول وقت كل صلاة بصوت الأذان وإشعار على الشاشة — لجميع مدن دول الخليج.</p>
+    <p class="lead">برنامج يذكرك بأوقات الصلوات لجميع مدن دول الخليج</p>
     <a class="download" href="PrayerReminder-Setup.exe" download>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
       تحميل البرنامج
     </a>
-    <div class="meta">ويندوز 10 و 11 · الإصدار <span id="app-version">2.6</span> · الحجم 19 ميجابايت · مجاني</div>
+    <div class="meta">ويندوز 10 و 11 · الإصدار <span id="app-version">2.7</span> · الحجم 19 ميجابايت · مجاني</div>
     <div class="meta" id="whats-new" hidden></div>
   </header>
 
   <section>
     <div class="countdown" id="countdown">
-      <div class="label">الأذان القادم في مكة المكرمة</div>
+      <div class="label">الأذان القادم في <span id="cd-city">مكة المكرمة</span> <button type="button" id="cd-change">تغيير</button></div>
+      <div class="picker" id="cd-picker" hidden>
+        <select id="cd-country" aria-label="الدولة"></select>
+        <select id="cd-cities" aria-label="المدينة"></select>
+        <button type="button" id="cd-locate">حدّد موقعي</button>
+      </div>
       <div class="next" id="cd-next">…</div>
       <div class="timer" id="cd-timer">--:--:--</div>
+      <div class="source" id="cd-source">حسب تقويم أم القرى</div>
       <div class="times" id="cd-times"></div>
     </div>
   </section>
@@ -131,11 +167,10 @@
   <section>
     <h2>المميزات</h2>
     <div class="features">
-      <div class="card"><strong>تلقائي بالكامل</strong><span>تختار مدينتك مرة وحدة، وبعدها يشتغل مع كل تشغيل للجهاز.</span></div>
-      <div class="card"><strong>جميع دول الخليج</strong><span>السعودية والإمارات والكويت وقطر والبحرين وعُمان، بالطريقة الرسمية لكل دولة (أم القرى في السعودية).</span></div>
-      <div class="card"><strong>إشعار على ذوقك</strong><span>9 ثيمات أو ألوانك الخاصة، واختر الزاوية اللي يظهر فيها. يبقى 20 دقيقة، وإغلاقه يوقف الأذان.</span></div>
-      <div class="card"><strong>صوتك المفضّل</strong><span>تحكّم بمستوى الصوت، أو اختر ملف أذان من عندك.</span></div>
-      <div class="card"><strong>يعمل بدون إنترنت</strong><span>يحفظ آخر مواقيت، ويستخدمها إذا انقطع الاتصال.</span></div>
+      <div class="card"><strong>تلقائي بالكامل</strong><span>اختيار المدينة اللي انت تسكن فيها.</span></div>
+      <div class="card"><strong>جميع دول الخليج</strong><span>السعودية والإمارات والكويت وقطر والبحرين وعُمان.</span></div>
+      <div class="card"><strong>إشعار على ذوقك</strong><span>الثيمات على كيفك واختر زاوية الإشعار، ويظهر لمدة 20 دقيقة.</span></div>
+      <div class="card"><strong>صوتك المفضّل</strong><span>إمكانية التحكم بمستوى الصوت مع اختيار ملف صوتي لديك.</span></div>
     </div>
   </section>
 
@@ -144,7 +179,7 @@
     <ol class="steps">
       <li>حمّل البرنامج من الزر بالأعلى.</li>
       <li>شغّل ملف التثبيت <kbd>PrayerReminder-Setup.exe</kbd> واضغط <kbd>التالي</kbd> حتى ينتهي.</li>
-      <li>اختر دولتك ومدينتك من القائمة، وشكل الإشعار ومكانه، ثم اضغط <kbd>حفظ</kbd> — وخلاص. البرنامج بيشتغل تلقائياً كل ما شغّلت الجهاز.</li>
+      <li>اختر دولتك ومدينتك من القائمة، وشكل الإشعار ومكانه، ثم اضغط <kbd>حفظ</kbd>. البرنامج يشتغل تلقائياً كل ما شغّلت الجهاز.</li>
       <li>بتظهر أيقونة الهلال بجانب الساعة. اضغط عليها بالزر الأيمن واختر «اختبار التنبيه الآن» للتأكد.</li>
     </ol>
   </section>
@@ -160,10 +195,6 @@
       <p>اضغط «إغلاق» في الإشعار، أو من أيقونة الهلال اختر «إيقاف صوت الأذان».</p>
     </details>
     <details>
-      <summary>كيف أحذف البرنامج؟</summary>
-      <p>من أيقونة الهلال اختر «إزالة البرنامج»، أو من إعدادات ويندوز ← التطبيقات ← التطبيقات المثبتة.</p>
-    </details>
-    <details>
       <summary>عندي النسخة القديمة وانحذفت أو ما صارت تشتغل؟</summary>
       <p>النسخة القديمة كان ممكن يحذفها Windows Defender بالغلط. حمّل النسخة الجديدة من الزر بالأعلى وثبّتها، وبتنظّف بقايا القديمة تلقائياً وتحافظ على إعداداتك.</p>
     </details>
@@ -173,8 +204,21 @@
     </details>
   </section>
 
+  <section>
+    <h2>ملاحظاتك</h2>
+    <form class="notes" id="notes-form">
+      <label for="notes-msg">عندك اقتراح أو واجهتك مشكلة؟ اكتبها هنا وتوصلنا.</label>
+      <textarea id="notes-msg" name="message" rows="4" required maxlength="2000" placeholder="اكتب ملاحظتك…"></textarea>
+      <input type="email" name="email" placeholder="إيميلك (اختياري) إذا تبي نرد عليك" dir="auto">
+      <div class="notes-row">
+        <button type="submit" id="notes-send">إرسال</button>
+        <span id="notes-status" role="status"></span>
+      </div>
+    </form>
+  </section>
+
   <footer>
-    المواقيت من <a href="https://aladhan.com" style="color:inherit">Aladhan</a> · صدقة جارية — شاركه مع من تحب
+    صدقة جارية عن بسام وباسل
   </footer>
 
 </div>
@@ -192,16 +236,81 @@ fetch("version.json?t=" + Date.now()).then(function (r) { return r.json(); }).th
 </script>
 <script>
 (function () {
-  // مواقيت مكة المكرمة (أم القرى) — الوقت دائماً بتوقيت مكة (UTC+3، بدون توقيت صيفي)
-  var LAT = 21.4225, LON = 39.8262, OFFSET = 3 * 3600 * 1000;
+  // عدّاد الأذان القادم لمدينة الزائر: يحدد أقرب مدينة خليجية من موقعه (الموقع ما يطلع من المتصفح —
+  // نرسل لـ Aladhan إحداثيات المدينة فقط)، أو المدينة اللي يختارها، وإلا مكة المكرمة.
+  // نفس طريقة البرنامج: أم القرى للسعودية، والطريقة الرسمية لكل دولة.
   var KEYS = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
   var NAMES = { Fajr: "الفجر", Dhuhr: "الظهر", Asr: "العصر", Maghrib: "المغرب", Isha: "العشاء" };
-  var days = {};  // كاش المواقيت لكل يوم
-  var $next = document.getElementById("cd-next"), $timer = document.getElementById("cd-timer"),
-      $times = document.getElementById("cd-times");
+  var MAX_KM = 150;  // أبعد من كذا عن أقرب مدينة = خارج الخليج
+  var STORE = "pr-city";
+  var $ = function (id) { return document.getElementById(id); };
+  var $next = $("cd-next"), $timer = $("cd-timer"), $times = $("cd-times"), $city = $("cd-city"),
+      $source = $("cd-source"), $picker = $("cd-picker"), $country = $("cd-country"), $cities = $("cd-cities");
 
-  function makkahDate(offsetDays) {  // تاريخ اليوم في مكة (+ أيام)
-    var d = new Date(Date.now() + OFFSET + offsetDays * 86400000);
+  var COUNTRIES = [];
+  var place = { country: "sa", name: "مكة المكرمة", lat: 21.4225, lon: 39.8262, method: 4, tz: 3 };
+  var days = {}, gen = 0, current = null, justPassed = null;
+
+  function save(v) { try { localStorage.setItem(STORE, JSON.stringify(v)); } catch (e) {} }
+  function saved() { try { return JSON.parse(localStorage.getItem(STORE)); } catch (e) { return null; } }
+  function country(code) { return COUNTRIES.filter(function (c) { return c.code === code; })[0]; }
+
+  function setPlace(c, city) {
+    place = { country: c.code, name: city[0], lat: city[1], lon: city[2], method: c.method, tz: c.tz };
+    days = {}; current = null; justPassed = null; gen++;
+    $city.textContent = place.name;
+    $source.textContent = c.code === "sa" ? "حسب تقويم أم القرى" : "حسب التقويم الرسمي في " + c.name;
+    $country.value = c.code; fillCities(c, place.name);
+    $next.textContent = "…"; $timer.classList.remove("now"); $timer.textContent = "--:--:--";
+    refresh();
+  }
+  function choose(code, name) {
+    var c = country(code), city = c && c.cities.filter(function (x) { return x[0] === name; })[0];
+    if (city) setPlace(c, city);
+  }
+
+  function km(lat1, lon1, lat2, lon2) {
+    var r = Math.PI / 180, a = Math.sin((lat2 - lat1) * r / 2), b = Math.sin((lon2 - lon1) * r / 2);
+    return 12742 * Math.asin(Math.sqrt(a * a + Math.cos(lat1 * r) * Math.cos(lat2 * r) * b * b));
+  }
+  function nearest(lat, lon) {
+    var best = null;
+    COUNTRIES.forEach(function (c) {
+      c.cities.forEach(function (city) {
+        var d = km(lat, lon, city[1], city[2]);
+        if (!best || d < best.d) best = { d: d, c: c, city: city };
+      });
+    });
+    return best;
+  }
+  function locate(manual) {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      var n = nearest(pos.coords.latitude, pos.coords.longitude);
+      if (n && n.d <= MAX_KM) {
+        setPlace(n.c, n.city);
+        save(null);  // الموقع التلقائي يُحسب من جديد كل زيارة
+      } else if (manual) {
+        $source.textContent = "موقعك خارج دول الخليج — اختر مدينة من القائمة";
+      }
+    }, function () {
+      if (manual) $source.textContent = "ما قدرنا نحدد موقعك — اختر مدينتك من القائمة";
+    }, { timeout: 15000, maximumAge: 3600000 });
+  }
+
+  function fillCities(c, select) {
+    $cities.innerHTML = "";
+    c.cities.forEach(function (city) {
+      var o = document.createElement("option");
+      o.value = o.textContent = city[0];
+      if (city[0] === select) o.selected = true;
+      $cities.appendChild(o);
+    });
+  }
+
+  // التاريخ بتوقيت المدينة (دول الخليج ما فيها توقيت صيفي)
+  function localDate(offsetDays) {
+    var d = new Date(Date.now() + place.tz * 3600000 + offsetDays * 86400000);
     return { y: d.getUTCFullYear(), m: d.getUTCMonth() + 1, d: d.getUTCDate() };
   }
   function key(dt) { return dt.y + "-" + dt.m + "-" + dt.d; }
@@ -214,30 +323,30 @@ fetch("version.json?t=" + Date.now()).then(function (r) { return r.json(); }).th
   function load(dt) {
     var k = key(dt);
     if (days[k]) return Promise.resolve(days[k]);
+    var pl = place;
     var url = "https://api.aladhan.com/v1/timings/" + pad(dt.d) + "-" + pad(dt.m) + "-" + dt.y +
-              "?latitude=" + LAT + "&longitude=" + LON + "&method=4";
+              "?latitude=" + pl.lat + "&longitude=" + pl.lon + "&method=" + pl.method;
     return fetch(url).then(function (r) { return r.json(); }).then(function (j) {
       var t = {};
       KEYS.forEach(function (name) {
         var hhmm = j.data.timings[name].split(" ")[0], p = hhmm.split(":");
-        t[name] = { hhmm: hhmm, at: Date.UTC(dt.y, dt.m - 1, dt.d, +p[0], +p[1]) - OFFSET };
+        t[name] = { hhmm: hhmm, at: Date.UTC(dt.y, dt.m - 1, dt.d, +p[0], +p[1]) - pl.tz * 3600000 };
       });
-      return (days[k] = t);
+      if (pl === place) days[k] = t;
+      return t;
     });
   }
 
   function findNext() {
-    var today = makkahDate(0);
-    return load(today).then(function (t) {
+    return load(localDate(0)).then(function (t) {
       var now = Date.now();
       for (var i = 0; i < KEYS.length; i++) {
         if (t[KEYS[i]].at > now) return { today: t, name: KEYS[i], at: t[KEYS[i]].at };
       }
-      return load(makkahDate(1)).then(function (tm) { return { today: t, name: "Fajr", at: tm.Fajr.at }; });
+      return load(localDate(1)).then(function (tm) { return { today: t, name: "Fajr", at: tm.Fajr.at }; });
     });
   }
 
-  var current = null, justPassed = null;
   function renderTimes(t, active) {
     $times.innerHTML = KEYS.map(function (n) {
       return '<div class="' + (n === active ? "active" : "") + '"><b>' + NAMES[n] + "</b>" + fmt12(t[n].hhmm) + "</div>";
@@ -245,13 +354,16 @@ fetch("version.json?t=" + Date.now()).then(function (r) { return r.json(); }).th
   }
 
   function refresh() {
+    var g = gen;
     return findNext().then(function (n) {
+      if (g !== gen) return;  // تغيّرت المدينة أثناء التحميل
       current = n;
-      $next.textContent = "صلاة " + NAMES[n.name] + " · " + fmt12(new Date(n.at + OFFSET).toISOString().substr(11, 5));
+      $next.textContent = "صلاة " + NAMES[n.name] + " · " + fmt12(new Date(n.at + place.tz * 3600000).toISOString().substr(11, 5));
       renderTimes(n.today, n.name);
     }).catch(function () {
+      if (g !== gen) return;
       $next.textContent = "تعذّر تحميل المواقيت — تأكد من الاتصال بالإنترنت";
-      setTimeout(refresh, 30000);
+      setTimeout(function () { if (g === gen) refresh(); }, 30000);
     });
   }
 
@@ -272,7 +384,44 @@ fetch("version.json?t=" + Date.now()).then(function (r) { return r.json(); }).th
     setTimeout(tick, 1000 - (Date.now() % 1000));
   }
 
-  refresh().then(tick);
+  function pick(code, name) {
+    choose(code, name);
+    save({ country: place.country, city: place.name });
+  }
+  $("cd-change").addEventListener("click", function () { $picker.hidden = !$picker.hidden; });
+  $country.addEventListener("change", function () { pick($country.value, country($country.value).cities[0][0]); });
+  $cities.addEventListener("change", function () { pick($country.value, $cities.value); });
+  $("cd-locate").addEventListener("click", function () { locate(true); });
+
+  refresh().then(tick);  // مكة المكرمة لين تجهز قائمة المدن
+  fetch("cities.json").then(function (r) { return r.json(); }).then(function (list) {
+    COUNTRIES = list;
+    $country.innerHTML = list.map(function (c) { return '<option value="' + c.code + '">' + c.name + "</option>"; }).join("");
+    $country.value = "sa"; fillCities(country("sa"), place.name);
+    var s = saved();
+    if (s && s.city) choose(s.country, s.city);  // مدينة اختارها الزائر بنفسه
+    else locate(false);  // يطلب إذن الموقع؛ إذا رفض الزائر يبقى على مكة المكرمة
+  }).catch(function () { $("cd-change").hidden = true; });
+})();
+</script>
+<script>
+// خانة الملاحظات — ترسل عبر Formspree
+(function () {
+  var ENDPOINT = "";  // رابط نموذج Formspree، مثل: https://formspree.io/f/xxxxxxxx
+  var form = document.getElementById("notes-form"), btn = document.getElementById("notes-send"),
+      status = document.getElementById("notes-status");
+  if (!ENDPOINT) { btn.disabled = true; status.textContent = "خانة الملاحظات بتشتغل قريباً."; return; }
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    btn.disabled = true; status.textContent = "جاري الإرسال…";
+    fetch(ENDPOINT, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } })
+      .then(function (r) {
+        if (!r.ok) throw new Error();
+        form.reset(); status.textContent = "وصلتنا ملاحظتك، شكراً لك!";
+      })
+      .catch(function () { status.textContent = "ما قدرنا نرسل الملاحظة، جرّب مرة ثانية."; })
+      .then(function () { btn.disabled = false; });
+  });
 })();
 </script>
 </body>
