@@ -405,18 +405,20 @@ fetch("version.json?t=" + Date.now()).then(function (r) { return r.json(); }).th
 })();
 </script>
 <script>
-// خانة الملاحظات — ترسل عبر Formspree
+// خانة الملاحظات — ترسل لنموذج Google «ملاحظات منبه الصلاة» (الردود تظهر في تبويب الردود بالنموذج)
 (function () {
-  var ENDPOINT = "https://formspree.io/f/mjygaqno";
+  var ENDPOINT = "https://docs.google.com/forms/d/e/1FAIpQLSd2nG_yCRrhuCWpCo-_843yboA8RbPhXyxkTtgSrxTffLH6kA/formResponse";
+  var FIELDS = { message: "entry.1571498340", email: "entry.259199318" };
   var form = document.getElementById("notes-form"), btn = document.getElementById("notes-send"),
       status = document.getElementById("notes-status");
-  if (!ENDPOINT) { btn.disabled = true; status.textContent = "خانة الملاحظات بتشتغل قريباً."; return; }
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     btn.disabled = true; status.textContent = "جاري الإرسال…";
-    fetch(ENDPOINT, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } })
-      .then(function (r) {
-        if (!r.ok) throw new Error();
+    var body = new URLSearchParams();
+    Object.keys(FIELDS).forEach(function (name) { body.append(FIELDS[name], form.elements[name].value.trim()); });
+    // Google ما يسمح بقراءة الرد (no-cors)، فنعتبرها وصلت إذا ما صار خطأ اتصال
+    fetch(ENDPOINT, { method: "POST", mode: "no-cors", body: body })
+      .then(function () {
         form.reset(); status.textContent = "وصلتنا ملاحظتك، شكراً لك!";
       })
       .catch(function () { status.textContent = "ما قدرنا نرسل الملاحظة، جرّب مرة ثانية."; })
